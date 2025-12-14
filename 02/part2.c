@@ -123,10 +123,8 @@ static int numlen(long num) {
     return count;
 }
 
-static int pow10halflen(long num) {
-    int l = numlen(num);
-    l /= 2;
-    int res = 1;
+static long ipow10(int l) {
+    long res = 1;
     for (int i = 0; i < l; i++) {
         res *= 10;
     }
@@ -134,9 +132,22 @@ static int pow10halflen(long num) {
 }
 
 static int is_invalid_id(long num) {
-    long p = pow10halflen(num);
-    if (num % p == num / p) {
-        return 1;
+    int len = numlen(num);
+    for (int i = 1; i < len; i++) {
+        if (len % i == 0) {
+            long p = ipow10(i);
+            long rem = num % p;
+            int have_diff = 0;
+            long tnum = num;
+            while (tnum > 0) {
+                if (tnum % p != rem) {
+                    have_diff = 1;
+                    break;
+                }
+                tnum /= p;
+            }
+            if (!have_diff) return 1;
+        }
     }
     return 0;
 }
