@@ -159,6 +159,12 @@ int main() {
             } 
         }
     }
+    iter = StrPairVector_begin(&spv);
+    for (; iter != StrPairVector_end(&spv); iter++) {
+        free(iter->first);
+        free(iter->second);
+    }
+    StrPairVector_free(&spv);
     printf("%ld\n", sum);
     return 0;
 }

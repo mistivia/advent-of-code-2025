@@ -171,5 +171,11 @@ int main() {
         }
     }
     printf("%ld\n", sum);
+    iter = StrPairVector_begin(&spv);
+    for (; iter != StrPairVector_end(&spv); iter++) {
+        free(iter->first);
+        free(iter->second);
+    }
+    StrPairVector_free(&spv);
     return 0;
 }
