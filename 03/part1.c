@@ -11,7 +11,9 @@ void getlines(StringVector *lines) {
         if (line == NULL) {
             break;
         }
-        StringVector_push_back(lines, line);
+        char *nline = str_strip(line);
+        free(line);
+        StringVector_push_back(lines, nline);
     }
 }
 
