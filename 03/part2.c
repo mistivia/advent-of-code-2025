@@ -44,6 +44,8 @@ void find_max_impl(const char *line, int len, int64_t *max, int d, int pos, int6
         int i = *it;
         find_max_impl(line, len, max, d + 1, i, res * 10 + curmax);
     }
+    
+    IntVector_free(&maxidx);
 }
 
 int64_t find_max(const char *line) {
@@ -62,7 +64,9 @@ int main() {
     int64_t sum = 0;
     for (; it != StringVector_end(&lines); it++) {
         sum += find_max(*it);
+        free((void*)*it);
     }
+    StringVector_free(&lines);
     printf("%"PRId64"\n", sum);
     return 0;
 }

@@ -39,7 +39,9 @@ int main() {
     int sum = 0;
     for (; it != StringVector_end(&lines); it++) {
         sum += find_max(*it);
+        free((void*)*it);
     }
     printf("%d\n", sum);
+    StringVector_free(&lines);
     return 0;
 }
