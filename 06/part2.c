@@ -44,6 +44,7 @@ char scan_column(StringVector *mat, int x, int *n) {
             out = out * 10 + c - '0';
             have_digit = 1;
         } else {
+            puts(mat->buffer[y]);
             PANIC;
         }
     }
@@ -65,15 +66,9 @@ int main() {
     for (int i = 0; i < lines.size; i++) {
         long len = strlen(lines.buffer[i]);
         if (len < maxlen) {
-            char *spaces = malloc(maxlen - len + 1);
-            memset(spaces, '0', maxlen - len);
-            spaces[maxlen - len] = '\0';
-            char *ns = malloc(maxlen + 1);
-            strcat(ns, lines.buffer[i]);
-            strcat(ns + len, spaces);
-            free(spaces);
-            free((void*)lines.buffer[i]);
-            lines.buffer[i] = ns;
+            lines.buffer[i] = realloc((void*)lines.buffer[i], maxlen + 1);
+            memset((void*)lines.buffer[i]+len, ' ', maxlen-len);
+            ((char*)lines.buffer[i])[maxlen] = '\0';
         }
     }
     long ret = 0;
