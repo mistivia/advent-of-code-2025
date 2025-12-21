@@ -101,6 +101,13 @@ int iter(StringVector *map, int height, int width) {
     return forked;
 }
 
+void free_map(StringVector *map) {
+    for (int i = 0; i < StringVector_len(map); i++) {
+        free((void*)*StringVector_ref(map, i));
+    }
+    StringVector_free(map);
+}
+
 int main() {
     StringVector map = readmap();
     int height = StringVector_len(&map);
@@ -115,5 +122,7 @@ int main() {
         }
     }
     printf("%d\n", res);
+
+    free_map(&map);
     return 0;
 }
