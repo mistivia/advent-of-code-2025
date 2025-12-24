@@ -351,6 +351,7 @@ FracVec FracMat_muladd(FracMat A, FracVec x, FracVec b) {
 }
 
 int gauss_elim(FracMat A, FracVec b, FracMat *sA, FracVec *sb) {
+    int ret;
     if (A.height != b.size) {
         fprintf(stderr, "Error: Dimension mismatch.\n");
         PANIC;
@@ -407,8 +408,8 @@ int gauss_elim(FracMat A, FracVec b, FracMat *sA, FracVec *sb) {
             }
         }
         if (all_zeros && !frac_is_zero(FracMat_get(aug, i, aug.width - 1))) {
-            FracMat_free(&aug);
-            return 0;
+            ret = 0;
+            goto end;
         }
     }
     int rank = 0;
@@ -428,7 +429,8 @@ int gauss_elim(FracMat A, FracVec b, FracMat *sA, FracVec *sb) {
         for (int i = 0; i < rank; i++) {
             FracVec_set(*sb, i, FracMat_get(aug, i, aug.width - 1));
         }
-        return 1;
+        ret = 1;
+        goto end;
     }
     *sA = FracMat_new(rank, free_var_count);
     int rank_count = 0;
@@ -454,8 +456,11 @@ int gauss_elim(FracMat A, FracVec b, FracMat *sA, FracVec *sb) {
     // puts("sb=");
     // FracVec_show(*sb, stdout); puts("");
     // fflush(stdout);
-
-    return 2;
+    ret = 2;
+    goto end;
+end:
+    FracMat_free(&aug);
+    return ret;
 }
 
 static void enum_impl(FracMat A, FracVec b, FracVec *x, int range, int cur, int *minsum) {
@@ -488,10 +493,12 @@ int enum_free_var(FracMat A, FracVec b, int range) {
     int minsum = INT_MAX;
     FracVec x = FracVec_new(A.width);
     enum_impl(A, b, &x, range, 0, &minsum);
+    FracVec_free(&x);
     return minsum;
 }
 
 int solve(int targetlen, Joltage target, JoltageVector *buttons) {
+    int minsum;
     int height = targetlen;
     int width = buttons->size;
     FracMat A = FracMat_new(height, width);
@@ -505,26 +512,33 @@ int solve(int targetlen, Joltage target, JoltageVector *buttons) {
         FracVec_set(b, i, Frac_new(target.val[i], 1));
     }
     FracMat sA;
+    sA.buf = NULL;
     FracVec sb;
+    sb.buf = NULL;
     int type = gauss_elim(A, b, &sA, &sb);
     if (type == 0) PANIC;
     if (type == 1) {
-        int minsum = 0;
+        minsum = 0;
         for (int i = 0; i < sb.size; i++) {
             Frac x = FracVec_get(sb, i);
             if (x.b != 1) PANIC;
             if (x.a < 0) PANIC;
             minsum += x.a;
         }
-        return minsum;
+        goto end;
     }
 
     int range = 0;
     for (int i = 0; i < 16; i++) {
         if (target.val[i] > range) range = target.val[i];
     }
-    int minsum = enum_free_var(sA, sb, range);
+    minsum = enum_free_var(sA, sb, range);
     // printf("%d\n", minsum);
+end:
+    FracMat_free(&A);
+    FracVec_free(&b);
+    FracMat_free(&sA);
+    FracVec_free(&sb);
     return minsum;
 }
 
@@ -541,6 +555,7 @@ int main() {
             // printf("%d\n", solution);
             r += solution;
             // fflush(stdout);
+            JoltageVector_free(&buttons);
         } else {
             break;
         }

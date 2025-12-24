@@ -175,6 +175,7 @@ int main() {
             r += solution;
             // printf("solution=%d\n", solution);
             skip_to_line_end();
+            UIntVector_free(&buttons);
         } else {
             break;
         }
