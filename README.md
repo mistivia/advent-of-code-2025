@@ -1,3 +1,3 @@
 # Advent of Code 2025
 
-Solutions are written in C, with [algds](https://github.com/mistivia/algds).
+Solutions of [AoC 2025](https://adventofcode.com/2025) written in C, with [algds](https://github.com/mistivia/algds).
