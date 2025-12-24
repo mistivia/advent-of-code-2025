@@ -193,5 +193,9 @@ int main() {
         }
     }
     printf("%d\n", ret);
+
+    UnionTreeNodeVector_free(&utree);
+    DistanceEntryVector_free(&distances);
+    Vec3Vector_free(&junctions);
     return 0;
 }
