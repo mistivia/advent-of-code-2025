@@ -123,5 +123,12 @@ int main() {
     }
     long ret = search(Tag_new("you"));
     printf("%ld\n", ret);
+
+    Tag2TagVectorHashTableIter dagit = Tag2TagVectorHashTable_begin(&dag);
+    for (; dagit != NULL; dagit = Tag2TagVectorHashTable_next(&dag, dagit)) {
+        TagVector_free(&dagit->val);
+    }
+    Tag2TagVectorHashTable_free(&dag);
+    Tag2LongHashTable_free(&cache);
     return 0;
 }

@@ -1,16 +1,13 @@
 #include <stdint.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <errno.h>
 #include <ctype.h>
 
 #include <algds/str.h>
 #include <algds/vec.h>
 #include <algds/hash_table.h>
 #include <algds/mmhash.h>
-#include <time.h>
 
 #define PANIC do { \
     fprintf(stderr, "panic at %s:%d\n", __FILE__, __LINE__); \
@@ -150,5 +147,12 @@ int main() {
     }
     long ret = search(Tag_new("svr"), 0, 0);
     printf("%ld\n", ret);
+
+    Tag2TagVectorHashTableIter dagit = Tag2TagVectorHashTable_begin(&dag);
+    for (; dagit != NULL; dagit = Tag2TagVectorHashTable_next(&dag, dagit)) {
+        TagVector_free(&dagit->val);
+    }
+    Tag2TagVectorHashTable_free(&dag);
+    CacheEntry2LongHashTable_free(&cache);
     return 0;
 }
