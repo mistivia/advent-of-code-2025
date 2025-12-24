@@ -108,5 +108,7 @@ int main() {
         }
     }
     printf("%ld\n", max_area);
+
+    Vec2Vector_free(&tiles);
     return 0;
 }

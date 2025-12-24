@@ -350,5 +350,24 @@ int main() {
         }
     }
     printf("%ld\n", max_area);
+
+    Vec2Vector_free(&tiles);
+    Int2RangeVectorTreeMapIter it;
+    for (it = Int2RangeVectorTreeMap_min(&hlines); it != NULL; it = Int2RangeVectorTreeMap_next(&hlines, it)) {
+        RangeVector_free(&it->value);
+    }
+    Int2RangeVectorTreeMap_free(&hlines);
+    for (it = Int2RangeVectorTreeMap_min(&vlines); it != NULL; it = Int2RangeVectorTreeMap_next(&vlines, it)) {
+        RangeVector_free(&it->value);
+    }
+    Int2RangeVectorTreeMap_free(&vlines);
+    for (int i = 0; i < vsegs.size; i++) {
+        RangeVector_free(&vsegs.buffer[i]);
+    }
+    RangeVectorVector_free(&vsegs);
+    for (int i = 0; i < hsegs.size; i++) {
+        RangeVector_free(&hsegs.buffer[i]);
+    }
+    RangeVectorVector_free(&hsegs);
     return 0;
 }
